@@ -33,6 +33,12 @@ public class SearchActivity extends ActionBarActivity {
     private ArrayList<ImageResult> imageResults;
     private ImageResultsAdapter aImageResults;
 
+    private final int REQUEST_CODE = 20;
+
+    String imageSize;
+    String imageColor;
+    String imageType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,8 +97,19 @@ public class SearchActivity extends ActionBarActivity {
     private void openSettings() {
 
         Intent i = new Intent(SearchActivity.this, SettingsActivity.class);
-        startActivity(i);
+        startActivityForResult(i, REQUEST_CODE);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+
+            imageSize = data.getExtras().getString("size");
+            imageColor = data.getExtras().getString("color");
+            imageType = data.getExtras().getString("type");
+        }
     }
 
     public void onImageSearch(View view) {
@@ -102,6 +119,21 @@ public class SearchActivity extends ActionBarActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         //https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=android&rsz=8
         String searchUrl = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&rsz=8";
+        if(imageType != null && (!imageType.equals("none")))
+        {
+            searchUrl = searchUrl + "&imgtype=" + imageType;
+        }
+        if(imageColor != null && (!imageColor.equals("none")))
+        {
+            searchUrl = searchUrl + "&imgcolor=" + imageColor;
+        }
+        if(imageSize != null && (!imageSize.equals("none")))
+        {
+            searchUrl = searchUrl + "&imgsz=" + imageSize;
+        }
+
+        Log.d("DEBUG", searchUrl);
+
         client.get(searchUrl, new JsonHttpResponseHandler() {
 
             @Override

@@ -1,6 +1,7 @@
 package com.janki.gridimagesearch.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -10,9 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Toast;
+
 import com.janki.gridimagesearch.R;
 
-public class SettingsActivity extends Activity implements OnItemSelectedListener{
+public class SettingsActivity extends Activity {
 
     Spinner spSize;
     Spinner spColor;
@@ -46,9 +49,14 @@ public class SettingsActivity extends Activity implements OnItemSelectedListener
                 R.array.type_array, android.R.layout.simple_spinner_item);
         aSpType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spType.setAdapter(aSpType);
+        addListenerOnSpinnerItemSelection();
+
     }
 
 
+    public void addListenerOnSpinnerItemSelection(){
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,13 +80,28 @@ public class SettingsActivity extends Activity implements OnItemSelectedListener
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onSave(View view) {
 
+        spSize = (Spinner) findViewById(R.id.spSize);
+        spColor = (Spinner) findViewById(R.id.spColor);
+        spType = (Spinner) findViewById(R.id.spType);
+
+        Intent data = new Intent();
+        data.putExtra("size", spSize.getSelectedItem().toString());
+        data.putExtra("color", spColor.getSelectedItem().toString());
+        data.putExtra("type", spType.getSelectedItem().toString());
+        data.putExtra("code", 200);
+        setResult(RESULT_OK, data);
+        finish();
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+//    @Override
+//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//        Toast.makeText(getApplicationContext(), parent.toString()+ "   " + position, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public void onNothingSelected(AdapterView<?> parent) {
+//
+//    }
 }
