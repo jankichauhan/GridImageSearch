@@ -13,6 +13,7 @@
     <string name="image_color_label">Color Filter: </string>
     <string name="image_type_filter">Image Type: </string>
     <string name="save_label">Save</string>
+    <string name="action_search">Search</string>
     <string-array name="color_array">
         <item>none</item>
         <item>black</item>
