@@ -2,6 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.janki.gridimagesearch.activities.ImageDisplayActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item
+        android:id="@+id/image_share"
+        app:showAsAction="always"
+        android:visible="true"
+        android:title="@string/share_label"
+        android:icon="@drawable/ic_share"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
+        <!--android:actionProviderClass="android.widget.ShareActionProvider"/>-->
 </menu>
