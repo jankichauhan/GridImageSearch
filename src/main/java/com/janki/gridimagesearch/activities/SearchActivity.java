@@ -14,6 +14,7 @@ import android.widget.GridView;
 
 import com.janki.gridimagesearch.R;
 import com.janki.gridimagesearch.adapters.ImageResultsAdapter;
+import com.janki.gridimagesearch.listners.EndlessScrollListener;
 import com.janki.gridimagesearch.models.ImageResult;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -32,17 +33,21 @@ public class SearchActivity extends ActionBarActivity {
     private GridView gdResults;
     private ArrayList<ImageResult> imageResults;
     private ImageResultsAdapter aImageResults;
-
     private final int REQUEST_CODE = 20;
-
+    private final int mMaxResults = 64;
+    String query;
     String imageSize;
     String imageColor;
     String imageType;
+    String searchFilters;
+    int currentPage = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        searchFilters = "";
         setupViews();
         imageResults = new ArrayList<ImageResult>();
         aImageResults = new ImageResultsAdapter(this, imageResults);
@@ -68,6 +73,27 @@ public class SearchActivity extends ActionBarActivity {
             }
         });
 
+        gdResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+
+                if (totalItemsCount > mMaxResults - 1) {
+                    return;
+                }
+                currentPage = (page - 1) * 8;
+                customLoadMoreDataFromApi();
+            }
+        });
+
+    }
+
+    private void customLoadMoreDataFromApi() {
+
+        query = etQuery.getText().toString();
+        String searchUrl = getSearchQuery(query);
+        //Adding 'start' query parameter for loading new data
+        searchUrl = searchUrl + "&start=" + currentPage;
+        getSearchResults(searchUrl);
     }
 
     @Override
@@ -109,47 +135,53 @@ public class SearchActivity extends ActionBarActivity {
             imageSize = data.getExtras().getString("size");
             imageColor = data.getExtras().getString("color");
             imageType = data.getExtras().getString("type");
+
+            if (imageType != null && (!imageType.equals("none"))) {
+                searchFilters = searchFilters + "&imgtype=" + imageType;
+            }
+            if (imageColor != null && (!imageColor.equals("none"))) {
+                searchFilters = searchFilters + "&imgcolor=" + imageColor;
+            }
+            if (imageSize != null && (!imageSize.equals("none"))) {
+                searchFilters = searchFilters + "&imgsz=" + imageSize;
+            }
         }
+    }
+
+    public String getSearchQuery(String query) {
+
+        String searchUrl = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&rsz=8" + searchFilters;
+
+        return searchUrl;
     }
 
     public void onImageSearch(View view) {
 
-        String query = etQuery.getText().toString();
+        query = etQuery.getText().toString();
         //   Toast.makeText(this, "Search query " + query, Toast.LENGTH_SHORT).show();
+        Log.d("DEBUG", getSearchQuery(query));
+        aImageResults.clear();
+        getSearchResults(getSearchQuery(query));
+    }
+
+    public void getSearchResults(String url) {
+
         AsyncHttpClient client = new AsyncHttpClient();
-        //https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=android&rsz=8
-        String searchUrl = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&rsz=8";
-        if(imageType != null && (!imageType.equals("none")))
-        {
-            searchUrl = searchUrl + "&imgtype=" + imageType;
-        }
-        if(imageColor != null && (!imageColor.equals("none")))
-        {
-            searchUrl = searchUrl + "&imgcolor=" + imageColor;
-        }
-        if(imageSize != null && (!imageSize.equals("none")))
-        {
-            searchUrl = searchUrl + "&imgsz=" + imageSize;
-        }
-
-        Log.d("DEBUG", searchUrl);
-
-        client.get(searchUrl, new JsonHttpResponseHandler() {
+        client.get(url, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-               // Log.d("DEBUG", response.toString());
+                // Log.d("DEBUG", response.toString());
                 JSONArray imageResultsJson = null;
                 try {
                     imageResultsJson = response.getJSONObject("responseData").getJSONArray("results");
-                    imageResults.clear();
                     //Making change to adapter, makes change in the array. So instead of using notify change, all results to adapter
                     aImageResults.addAll(ImageResult.fromJSONArray(imageResultsJson));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-               // Log.d("Info", imageResults.toString());
+                // Log.d("Info", imageResults.toString());
             }
         });
     }
