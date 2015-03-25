@@ -1,6 +1,9 @@
 package com.janki.gridimagesearch.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.janki.gridimagesearch.R;
 import com.janki.gridimagesearch.adapters.ImageResultsAdapter;
@@ -157,6 +161,11 @@ public class SearchActivity extends ActionBarActivity {
 
     public void onImageSearch(View view) {
 
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         query = etQuery.getText().toString();
         //   Toast.makeText(this, "Search query " + query, Toast.LENGTH_SHORT).show();
         Log.d("DEBUG", getSearchQuery(query));
@@ -184,5 +193,13 @@ public class SearchActivity extends ActionBarActivity {
                 // Log.d("Info", imageResults.toString());
             }
         });
+    }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        //= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }
