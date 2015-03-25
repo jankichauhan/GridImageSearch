@@ -20,6 +20,7 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
+import com.etsy.android.grid.StaggeredGridView;
 import com.janki.gridimagesearch.R;
 import com.janki.gridimagesearch.adapters.ImageResultsAdapter;
 import com.janki.gridimagesearch.listners.EndlessScrollListener;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 public class SearchActivity extends ActionBarActivity {
 
     private EditText etQuery;
-    private GridView gdResults;
+    private StaggeredGridView gdResults;
     private ArrayList<ImageResult> imageResults;
     private ImageResultsAdapter aImageResults;
     private final int REQUEST_CODE = 20;
@@ -66,7 +67,7 @@ public class SearchActivity extends ActionBarActivity {
     private void setupViews() {
 
         //etQuery = (EditText) findViewById(R.id.etQuery);
-        gdResults = (GridView) findViewById(R.id.gvResults);
+        gdResults = (StaggeredGridView) findViewById(R.id.gvResults);
         gdResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

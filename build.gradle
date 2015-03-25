@@ -25,4 +25,6 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.5'
     // Load remote images in image view
     compile 'com.squareup.picasso:picasso:2.5.0'
+    //Staggered grid view
+    compile 'com.etsy.android.grid:library:1.0.5'
 }

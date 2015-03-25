@@ -3,18 +3,38 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        android:id="@+id/ivImage" />
+    <!--<ImageView
+       android:layout_width="75dp"
+       android:layout_height="75dp"
+       android:scaleType="fitXY"
+       android:adjustViewBounds="true"
+       android:id="@+id/ivImage" />
 
-    <TextView
+  <TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/image_title"-->
+        <!--android:id="@+id/tvTitle"-->
+        <!--android:maxLines="2"-->
+        <!--android:ellipsize="end" />-->
+
+    <com.etsy.android.grid.util.DynamicHeightImageView
+        android:id="@+id/ivImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/image_title"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"/>
+
+    <com.etsy.android.grid.util.DynamicHeightTextView
         android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         android:maxLines="2"
-        android:ellipsize="end" />
+        android:ellipsize="end"
+        android:paddingTop="@dimen/text_padding"
+        android:paddingLeft="@dimen/text_padding"
+        android:paddingRight="@dimen/text_padding"
+        android:textSize="10sp"
+         />
 </LinearLayout>
