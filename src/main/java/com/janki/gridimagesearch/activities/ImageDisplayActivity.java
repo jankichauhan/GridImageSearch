@@ -9,13 +9,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-//import android.widget.ShareActionProvider;
-
-import android.support.v7.widget.ShareActionProvider;
 import android.widget.ProgressBar;
 
 import com.janki.gridimagesearch.R;
@@ -26,11 +24,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 public class ImageDisplayActivity extends ActionBarActivity {
 
     private ShareActionProvider miShareAction;
     private ImageView ivImageResult;
     private ProgressBar pbImageLoad;
+    private PhotoViewAttacher mAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +87,6 @@ public class ImageDisplayActivity extends ActionBarActivity {
         MenuItem item = menu.findItem(R.id.image_share);
         miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
-        // Pull out the url from the intent
-
         String url = getIntent().getStringExtra("url");
         // Find the image view
         ivImageResult = (ImageView) findViewById(R.id.ivFullImage);
@@ -101,6 +100,12 @@ public class ImageDisplayActivity extends ActionBarActivity {
                     public void onSuccess() {
                         pbImageLoad.setVisibility(View.GONE);
                         setupShareIntent();
+
+                        if (mAttacher != null) {
+                            mAttacher.update();
+                        } else {
+                            mAttacher = new PhotoViewAttacher(ivImageResult);
+                        }
                     }
 
                     @Override
@@ -121,7 +126,7 @@ public class ImageDisplayActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.image_share) {
             return true;
         }
 

@@ -1,6 +1,5 @@
 package com.janki.gridimagesearch.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -10,19 +9,18 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
-import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
 import com.janki.gridimagesearch.R;
 import com.janki.gridimagesearch.adapters.ImageResultsAdapter;
+import com.janki.gridimagesearch.fragments.SearchFilter;
 import com.janki.gridimagesearch.listners.EndlessScrollListener;
 import com.janki.gridimagesearch.models.ImageResult;
 import com.loopj.android.http.AsyncHttpClient;
@@ -36,7 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class SearchActivity extends ActionBarActivity {
+public class SearchActivity extends ActionBarActivity implements SearchFilter.SearchFilterListener {
 
     private EditText etQuery;
     private StaggeredGridView gdResults;
@@ -102,12 +100,16 @@ public class SearchActivity extends ActionBarActivity {
         //ßMenuInflater inflater = getMenuInflater();
         getMenuInflater().inflate(R.menu.menu_setting_activity, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String inputQuery) {
                 // perform query here
                 query = inputQuery;
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+
                 newSearch();
 
                 return true;
@@ -136,8 +138,8 @@ public class SearchActivity extends ActionBarActivity {
 
     private void openSettings() {
 
-        Intent i = new Intent(SearchActivity.this, SettingsActivity.class);
-        startActivityForResult(i, REQUEST_CODE);
+        SearchFilter search = SearchFilter.newInstance();
+        search.show(getFragmentManager(), "Settings_fragment");
 
     }
 
@@ -213,5 +215,13 @@ public class SearchActivity extends ActionBarActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    @Override
+    public void onSaveButtonClick(String filters) {
+
+        searchFilters = filters;
+
+        newSearch();
     }
 }

@@ -23,6 +23,7 @@ public class ImageResult implements Serializable{
     public String url;
     public String title;
     public String tbUrl;
+    public String website;
     public int height;
     public int width;
 
@@ -35,6 +36,7 @@ public class ImageResult implements Serializable{
             this.title = image.getString("title");
             this.height = image.getInt("tbHeight");
             this.width = image.getInt("tbWidth");
+            this.website = image.getString("visibleUrl");
         }
         catch (JSONException e) {
         }
