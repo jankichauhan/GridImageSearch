@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.etsy.android.grid.util.DynamicHeightImageView;
+import com.etsy.android.grid.util.DynamicHeightTextView;
 import com.janki.gridimagesearch.R;
 import com.janki.gridimagesearch.models.ImageResult;
 import com.squareup.picasso.Picasso;
@@ -20,8 +20,10 @@ import java.util.List;
  */
 public class ImageResultsAdapter extends ArrayAdapter<ImageResult> {
 
+
     public ImageResultsAdapter(Context context, List<ImageResult> images) {
         super(context, R.layout.item_image_result, images);
+
     }
 
     @Override
@@ -29,19 +31,35 @@ public class ImageResultsAdapter extends ArrayAdapter<ImageResult> {
 
         ImageResult result = getItem(position);
 
+        ViewHolder viewHolder = new ViewHolder();
+
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_image_result, parent, false);
         }
 
-        ImageView ivImage = (ImageView) convertView.findViewById(R.id.ivImage);
-        TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+        viewHolder.ivImage = (DynamicHeightImageView) convertView.findViewById(R.id.ivImage);
+        viewHolder.tvWebsite = (DynamicHeightTextView) convertView.findViewById(R.id.tvTitle);
 
-        ivImage.setImageResource(0);
+        viewHolder.ivImage.setImageResource(0);
 
-        tvTitle.setText(Html.fromHtml(result.website));
+        double positionHeightRatio = getImageHeightRatio(position);
+        viewHolder.ivImage.setHeightRatio(positionHeightRatio);
 
-        Picasso.with(getContext()).load(result.tbUrl).into(ivImage);
+        viewHolder.tvWebsite.setText(Html.fromHtml(result.website));
+        Picasso.with(getContext()).load(result.tbUrl).into(viewHolder.ivImage);
 
         return convertView;
+    }
+
+    private double getImageHeightRatio(final int position) {
+        ImageResult imageInfo = getItem(position);
+        return (double) imageInfo.height / (double) imageInfo.width;
+    }
+
+    private static class ViewHolder {
+        DynamicHeightImageView ivImage;
+        DynamicHeightTextView tvTitle;
+        DynamicHeightTextView tvWebsite;
+
     }
 }

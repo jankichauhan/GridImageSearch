@@ -76,6 +76,7 @@ public class SearchActivity extends ActionBarActivity implements SearchFilter.Se
                 ImageResult result = imageResults.get(position);
                 // Pass the image result
                 i.putExtra("url", result.url);
+                i.putExtra("website", result.website);
                 startActivity(i);
             }
         });

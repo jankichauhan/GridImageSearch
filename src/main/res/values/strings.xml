@@ -11,6 +11,8 @@
     <string name="advance_search_label">Advance Search Options:</string>
     <string name="image_size_label">Image Size: </string>
     <string name="image_color_label">Color Filter: </string>
+    <string name="image_content_desc">Image Result</string>
+    <string name="image_default_title">Image Result</string>
     <string name="image_type_filter">Image Type: </string>
     <string name="save_label">Save</string>
     <string name="action_search">Search</string>

@@ -88,6 +88,7 @@ public class ImageDisplayActivity extends ActionBarActivity {
         miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
         String url = getIntent().getStringExtra("url");
+        String website = getIntent().getStringExtra("website");
         // Find the image view
         ivImageResult = (ImageView) findViewById(R.id.ivFullImage);
         pbImageLoad = (ProgressBar) findViewById(R.id.pbImageLoad);
